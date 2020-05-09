@@ -1,0 +1,41 @@
+材质
+  共有属性
+    id：用来识别材质的标识符
+    name: 赋予材质名称
+    opacity: 物体的透明度
+    transparent: 是否透明
+    overdraw: 过度描绘
+    visible: 是否可见
+    side: 决定属性在几何体的哪个面应用
+    needsUpdate: 是否刷新
+  MeshBasicMaterial 特点
+    不受光照影响
+    使用这种材质的网格会被渲染成一些简单的多边形
+    可以显示出几何体的线框
+    color:     材质的颜色
+    wireframe: 可以显示出线框
+    fog:       指定当前材质是否受全局的雾化效果的影响
+  MeshLambertMaterial 特点
+    外观不由光照和材质决定
+    外观由物体到相机的距离决定
+    可以与其他材质组合使用
+    wireframe: 是否显示线框
+    writeframelinewidth 线框线的宽度
+
+光源
+  AmbientLight 环境光
+    影响整个场景
+    没有明确的光源位置 各处亮度也一致
+    不会影响阴影的产生
+    不能将环境光作为场景中唯一的光源 可搭配点光源 聚光灯光源
+    api
+      new THREE.AmbientLight(0xff0000)
+      add(color) 添加到当前颜色上
+      clone()    复制当前颜色
+  PointLight 点光源
+    不会产生阴影
+    api
+      new THREE.PointLight
+        color
+        intensity 光的强度
+        distance  从光源所在的位置经过 distance 距离逐渐衰减为 0、如果为 0 则表示光源强度不衰减
