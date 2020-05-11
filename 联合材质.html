@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>联合材质</title>
+</head>
+<body>
+  <script src="../three.js"></script>
+  <script>
+    const scene = new THREE.Scene()
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 10, 130)
+    camera.position.set(-80, 40, 20)
+    camera.lookAt(scene.position)
+
+    const renderer = new THREE.WebGLRenderer()
+    renderer.setClearColor(0x000000)
+    renderer.setSize(window.innerWidth, window.innerHeight)
+
+    const axes = new THREE.AxesHelper(30)
+    scene.add(axes)
+
+    function addCube() {
+      const cubeSize = Math.ceil(3+(Math.random() * 3))
+      const cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize)
+      const cubeMaterial = new THREE.MeshDepthMaterial()
+      const colorMaterial = new THREE.MeshBasicMaterial({
+        color: 0x00ff00,
+        transparent: true,
+        blending: THREE.MultiplyBlending // 定义融合属性
+      })
+
+      const cube = new THREE.SceneUtils.createMultiMaterialObject(
+        cubeGeometry, [colorMaterial, cubeMaterial]
+      )
+      cube.castShadow = true
+      cube.children[1].scale.set(0.99, 0.99, 0.99)
+      cube.position.set(
+        -60+Math.round(Math.random()*100),
+        Math.round(Math.random()*10),
+        -100+Math.round(Math.random()*150)
+      )
+
+      scene.add(cube)
+    }
+
+    for(let i=0; i<100; i++) {
+      addCube()
+    }
+
+    function render () {
+      scene.traverse(ev => {
+        if (ev instanceof THREE.Mesh) {
+          ev.rotation.x += 0.02
+          ev.rotation.y += 0.02
+          ev.rotation.z += 0.02
+        }
+      })
+      renderer.render(scene, camera)
+
+      window.requestAnimationFrame(render)
+    }
+    render()
+
+    document.body.appendChild(renderer.domElement)
+
+  </script>
+</body>
+</html>

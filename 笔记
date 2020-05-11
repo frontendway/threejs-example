@@ -39,3 +39,56 @@
         color
         intensity 光的强度
         distance  从光源所在的位置经过 distance 距离逐渐衰减为 0、如果为 0 则表示光源强度不衰减
+  THREE.SpotLight 聚光灯
+    会产生阴影
+    color
+    intensity 光的强度
+    angle     光纤散射的角度 最大 Math.PI/2
+    penumbra  聚光锥的半影衰减的半分比 在 0 和 1 之间 默认 0
+    decay     沿着光照距离的衰减量
+    案例
+      const spotLight = new THREE.SpotLight(0xFFFFFF)
+      spotLight.position.set(-40, 60, -10)
+      spotLight.castShadow = true
+      spotLight.target = sphere // 设置聚光灯光源的照射目标
+      scene.add(spotLight)
+  THREE.DirectionalLight 平行光
+    color
+    intensity 光的强度
+    案例
+      const directionalLight = new THREE.DirectionalLight('#ff5818')
+      directionalLight.position.set(-40, 60, -11)
+      directionalLight.shadow.camera.near = 3 // 以下6个属性必须设置才会有阴影
+      directionalLight.shadow.camera.far = 200
+      directionalLight.shadow.camera.left = -20
+      directionalLight.shadow.camera.right = 200
+      directionalLight.shadow.camera.top = -100
+      directionalLight.shadow.camera.bottom = 200
+      directionalLight.intensity = 0.5
+      directionalLight.shadow.mapSize.height = 300 // 值越高阴影越细腻
+      directionalLight.shadow.mapSize.width = 400
+      directionalLight.target = target
+      scene.add(directionalLight)
+
+二维几何体
+  THREE.CircleGeometry 二维圆形
+    radius
+    所用面的数量 默认 8 个
+    画圆的起始位置
+    定义圆要画多大
+
+三维几何体
+  THREE.CylinderGeometry 圆柱体
+    顶部尺寸 默认20
+    底部尺寸 默认20
+    高度     默认100
+    x轴的段数
+    y轴段数
+    制定网格顶部和底部是否封闭 默认false
+  THREE.TorusGeometry 圆环
+    radius 圆环中心到边缘的半径
+    管道半径
+    长度段数
+    宽度段数
+    控制绘制的长度 默认 2*Math.PI 完整的圆形
+  

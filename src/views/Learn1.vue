@@ -4,12 +4,14 @@
 
 <script>
 import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import textureJpg from './demo1_bg.jpg'
 
 export default {
   mounted() {
-    const scene = new THREE.Scene()
+    const scene = this.scene = new THREE.Scene()
 
-    const camera = new THREE.PerspectiveCamera(
+    const camera = this.camera = new THREE.PerspectiveCamera(
       45, // 角度
       window.innerWidth/window.innerHeight, // 宽高比
       1, // 最近距离
@@ -18,7 +20,7 @@ export default {
     camera.position.set(100, 100, 100)
     camera.lookAt(scene.position)
 
-    const renderer = new THREE.WebGLRenderer()
+    const renderer = this.renderer = new THREE.WebGLRenderer()
     renderer.setClearColor(0xeeeeee)
     renderer.shadowMap.enabled = true // 打开阴影
     renderer.setSize(window.innerWidth, window.innerHeight)
@@ -34,9 +36,13 @@ export default {
     this.createSphere(scene)
     this.setUpSpotLight(scene)
     this.setUpFog(scene)
+    this.createCircle()
+    this.createTorus()
+    this.addTexture()
 
     this.$refs.content.appendChild(renderer.domElement)
-    renderer.render(scene, camera)
+    this.addControl()
+    this.autoRender()
   },
   methods: {
     // 绘制平面几何体
@@ -73,14 +79,14 @@ export default {
     // 绘制球体
     createSphere(scene) {
       const sphere = new THREE.Mesh(
-        new THREE.SphereGeometry(10, 10, 10), // 半径 x轴分几份 y轴分几份
+        new THREE.SphereGeometry(6, 10, 10), // 半径 x轴分几份 y轴分几份
         new THREE.MeshBasicMaterial({
           color: 0x712ebc,
           wireframe: true
         })
       )
 
-      sphere.position.set(0, 0, 40)
+      sphere.position.set(0, 1, 40)
       scene.add(sphere)
     },
     // 设置聚光灯光源
@@ -98,6 +104,49 @@ export default {
       // scene.overrideMaterial = new THREE.MeshLambertMaterial({
       //   color: 0xffffff
       // })
+    },
+    // 添加控件
+    addControl () {
+      this.orbitControls = new OrbitControls(this.camera, this.$refs.content)
+    },
+    autoRender () {
+      this.renderer.render(this.scene, this.camera)
+      this.orbitControls.update()
+
+      window.requestAnimationFrame(this.autoRender)
+    },
+    // 绘制二维圆形
+    createCircle() {
+      const mesh = new THREE.Mesh(
+        new THREE.CircleGeometry(6, 10, 0.3 * Math.PI, 0.5 * Math.PI),
+        new THREE.MeshBasicMaterial({ 
+          color: 'blue',
+          wireframe: true
+        })
+      )
+      this.scene.add(mesh)
+    },
+    // 绘制圆环
+    createTorus() {
+      const mesh = new THREE.Mesh(
+        new THREE.TorusGeometry(10, 2, 20, 10, 2 * Math.PI),
+        new THREE.MeshBasicMaterial({ 
+          color: 'blue',
+          wireframe: true
+        })
+      )
+      this.scene.add(mesh)
+    },
+    // 增加纹理
+    addTexture() {
+      const planeGeometry = new THREE.PlaneGeometry(50, 30)
+      const texture = new THREE.TextureLoader().load(textureJpg)
+      const material = new THREE.MeshBasicMaterial({
+        map: texture
+      })
+      const plane = new THREE.Mesh(planeGeometry, material)
+      plane.position.set(0, 0, 20)
+      this.scene.add(plane)
     }
   }
 }
